@@ -1,0 +1,36 @@
+<project name="mime" default="obj" basedir=".">
+
+  <property environment="env"/>
+  <property name="src.dir"     value="../../../../java"/>
+  <property name="build.dir"   value="../../../../javaout"/>
+  <property name="doc.dir"     value="../../../../javadoc"/>
+
+  <target name="obj">
+    <echo message="building mime..."/>
+    <mkdir dir="${build.dir}"/>
+    <javac srcdir="${basedir}" destdir="${build.dir}" debug="on"
+	 deprecation="on">
+    </javac>
+    <echo message="built mime."/>
+  </target>
+
+  <target name="clean">
+    <delete dir="${build.dir}/org/media_art_online/mime"/>
+  </target>
+
+  <target name="doc">
+    <echo message="documenting mime..."/>
+    <javadoc
+     packagenames="org.media_art_online.mime"
+     classpath="${build.dir}"
+     destdir="${doc.dir}" Locale="en_US">
+      <fileset dir="${basedir}">
+        <include name="**/*.java"/>
+      </fileset>
+    </javadoc>
+    <echo message="documented mime."/>
+  </target>
+
+</project>
+
+<!-- end of build.xml -->

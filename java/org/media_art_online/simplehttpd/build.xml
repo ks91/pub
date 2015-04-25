@@ -1,0 +1,70 @@
+<project name="simplehttpd" default="obj" basedir=".">
+
+  <property environment="env"/>
+  <property name="src.dir"     value="../../../../java"/>
+  <property name="build.dir"   value="../../../../javaout"/>
+  <property name="doc.dir"     value="../../../../javadoc"/>
+
+  <target name="obj" depends="lib">
+    <echo message="building simplehttpd..."/>
+    <mkdir dir="${build.dir}"/>
+    <javac srcdir="${basedir}" destdir="${build.dir}" debug="on"
+     deprecation="on">
+    </javac>
+    <copy todir="${build.dir}/org/media_art_online/simplehttpd">
+      <fileset dir="${basedir}" includes="**/*.html"/>
+      <fileset dir="${basedir}" includes="**/*.png"/>
+      <fileset dir="${basedir}" includes="**/*_en_US.properties"/>
+    </copy>
+    <copy tofile="${build.dir}/org/media_art_online/simplehttpd/simplehttpd.properties">
+      <fileset dir="${basedir}" includes="simplehttpd_en_US.properties"/>
+    </copy>
+    <native2ascii encoding="Shift_JIS" src="${basedir}"
+     dest="${build.dir}/org/media_art_online/simplehttpd"
+     includes="**/*_ja_JP.properties"/>
+    <echo message="built simplehttpd."/>
+  </target>
+
+  <target name="package" depends="obj">
+    <echo message="packaging simplehttpd application..."/>
+    <mkdir dir="${build.dir}"/>
+    <delete>
+      <fileset dir="${build.dir}" includes="manifest.txt"/>
+    </delete>
+    <copy todir="${build.dir}">
+      <fileset dir="${basedir}" includes="**/*.txt"/>
+    </copy>
+    <jar destfile="${build.dir}/simplehttpd.jar"
+     manifest="${build.dir}/manifest.txt">
+      <fileset dir="${build.dir}" includes="org/media_art_online/simplehttpd/**/*"/>
+      <fileset dir="${build.dir}" includes="org/media_art_online/mime/*"/>
+    </jar>
+    <echo message="packaged simplehttpd application..."/>
+  </target>
+
+  <target name="lib">
+    <ant dir="../mime" target="obj"/>
+  </target>
+
+  <target name="clean">
+    <ant dir="../mime" target="clean"/>
+    <delete dir="${build.dir}/org/media_art_online/simplehttpd"/>
+  </target>
+
+  <target name="doc">
+    <echo message="documenting simplehttpd..."/>
+    <mkdir dir="${doc.dir}"/>
+    <javadoc
+     packagenames="org.media_art_online.simplehttpd"
+     classpath="${build.dir}"
+     destdir="${doc.dir}" Locale="en_US">
+      <fileset dir="${basedir}">
+        <include name="**/*.java"/>
+      </fileset>
+    </javadoc>
+    <echo message="documented simplehttpd."/>
+  </target>
+
+</project>
+
+<!-- end of build.xml -->
