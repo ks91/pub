@@ -18,3 +18,5 @@ or double-click on the icon of the jar file if your environment allows that.
 
 Upon starting up, the program asks for the port number, whose default value is 8480.
 The document root is where the jar file is placed.
+While at work, the server shows the log of HTTP communication.
+
