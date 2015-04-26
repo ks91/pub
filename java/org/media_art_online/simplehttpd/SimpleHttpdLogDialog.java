@@ -81,6 +81,13 @@ public class SimpleHttpdLogDialog extends Handler
         _dialog.getContentPane().add(panel, BorderLayout.SOUTH);
 
         _dialog.pack();
+
+        try {
+            _doc.insertString(_doc.getLength(),
+             getFormatter().getHead(this), null);
+
+        } catch (BadLocationException unused) {
+        }
     }
 
     @Override
@@ -226,7 +233,7 @@ public class SimpleHttpdLogDialog extends Handler
     private static final String S_STYLE_DEFAULT = "default";
     private static final String S_STYLE_OUTPUT  = "output";
 
-    private static final int DIM_W = 600;
+    private static final int DIM_W = 750;
     private static final int DIM_H = 600;
 }
 
@@ -251,10 +258,12 @@ class SimpleHttpdLogFormatter extends Formatter {
          + "] " + s + (s.endsWith("\n") ? "" : "\n"));
     }
 
+    @Override
     public String getHead(Handler handler) {
         return (getTimeString());
     }
 
+    @Override
     public String getTail(Handler handler) {
         return ("\n");
     }

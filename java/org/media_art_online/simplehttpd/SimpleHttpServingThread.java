@@ -291,9 +291,19 @@ public class SimpleHttpServingThread extends Thread {
 
                         OutputStream output = _socket.getOutputStream();
 
-                        output.write(SimpleHttpServer
-                         .getNotFoundResponse().getBytes());
+                        String sExc = SimpleHttpServer.getNotFoundResponse();
+
+                        output.write(sExc.getBytes());
                         output.close();
+
+                        int idx = sExc.indexOf("<");
+
+                        if (idx >= 0) {
+                            sExc = sExc.substring(0, idx);
+                        }
+
+                        SimpleHttpd.logger.fine(httpLogHead(true) + "\n"
+                         + sExc);
                     }
 
                     _losLines.clear();
