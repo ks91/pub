@@ -98,7 +98,10 @@ public class SimpleHttpd implements SimpleHttpdVersion {
             if (ex.getClass() == RuntimeException.class
              && ex.getCause().getClass() == BindException.class) {
 
-                JOptionPane.showMessageDialog(null, getString("MSG_DUP"));
+                JOptionPane.showMessageDialog(null, getString(
+                 ex.getCause().getMessage().matches(S_REGEX_PERMISSION_DENIED)
+                 ? "MSG_FORBIDDEN" : "MSG_DUP") + "\n"
+                 + ex.getCause().getMessage() + ".");
 
             } else {
                 ex.printStackTrace();
@@ -121,6 +124,9 @@ public class SimpleHttpd implements SimpleHttpdVersion {
     private static ResourceBundle _bundle;
 
     private SimpleHttpdLogDialog _dialog;
+
+    private static final String S_REGEX_PERMISSION_DENIED
+                                                     = ".*[Pp]ermission.*";
 }
 
 // end of SimpleHttpd.java

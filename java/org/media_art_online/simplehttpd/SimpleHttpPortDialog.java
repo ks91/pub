@@ -34,6 +34,7 @@ import javax.swing.border.*;
 
 public class SimpleHttpPortDialog extends JDialog implements ActionListener {
 
+    public static final int I_PORT_WELL_KNOWN_BEGIN =     0;
     public static final int I_PORT_REGISTERED_BEGIN =  1024;
     public static final int I_PORT_REGISTERED_END   = 49151;
 
@@ -54,7 +55,7 @@ public class SimpleHttpPortDialog extends JDialog implements ActionListener {
 
         SpinnerModel model
          = new SpinnerNumberModel(SimpleHttpd.iPort,
-         I_PORT_REGISTERED_BEGIN, I_PORT_REGISTERED_END, 1);
+         I_PORT_WELL_KNOWN_BEGIN, I_PORT_REGISTERED_END, 1);
 
         _spinner = new JSpinner(model);
         _spinner.setEditor(new JSpinner.NumberEditor(_spinner, "#"));

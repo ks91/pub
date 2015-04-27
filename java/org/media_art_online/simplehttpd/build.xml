@@ -34,7 +34,7 @@
     <copy todir="${build.dir}">
       <fileset dir="${basedir}" includes="**/*.txt"/>
     </copy>
-    <jar destfile="${build.dir}/simplehttpd.jar"
+    <jar destfile="${build.dir}/simplehttpd-1-0-1.jar"
      manifest="${build.dir}/manifest.txt">
       <fileset dir="${build.dir}" includes="org/media_art_online/simplehttpd/**/*"/>
       <fileset dir="${build.dir}" includes="org/media_art_online/mime/*"/>
@@ -49,6 +49,10 @@
   <target name="clean">
     <ant dir="../mime" target="clean"/>
     <delete dir="${build.dir}/org/media_art_online/simplehttpd"/>
+    <delete>
+      <fileset dir="${build.dir}" includes="manifest.txt"/>
+      <fileset dir="${build.dir}" includes="simplehttpd*.jar"/>
+    </delete>
   </target>
 
   <target name="doc">
