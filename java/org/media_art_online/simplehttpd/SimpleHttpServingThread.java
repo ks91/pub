@@ -277,6 +277,12 @@ public class SimpleHttpServingThread extends Thread {
                          ? S_INDEX_DEFAULT
                          : s.substring(index0 + 1, index2));
 
+                        try {
+                            sFile = URLDecoder.decode(sFile, "UTF-8");
+
+                        } catch (UnsupportedEncodingException unused) {
+                        }
+
                         String[] aos = sFile.split("/");
 
                         sFile = aos[0];

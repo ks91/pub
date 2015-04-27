@@ -53,7 +53,7 @@ public class SimpleHttpdLogDialog extends Handler
         _dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         _dialog.getContentPane().add(
-         new JLabel(" " + SimpleHttpd.getString("TITLE_PORT")
+         _labelPort = new JLabel(" " + SimpleHttpd.getString("TITLE_PORT")
          + ": " + SimpleHttpd.iPort), BorderLayout.NORTH);
 
         _pane = new JTextPane();
@@ -127,6 +127,13 @@ public class SimpleHttpdLogDialog extends Handler
     }
 
     public void setVisible(boolean isVisible) {
+
+        if (isVisible) {
+
+            _labelPort.setText(" " + SimpleHttpd.getString("TITLE_PORT")
+             + ": " + SimpleHttpd.iPort);
+        }
+
         _dialog.setVisible(isVisible);
     }
 
@@ -222,6 +229,8 @@ public class SimpleHttpdLogDialog extends Handler
     private JButton _buttonExit;
 
     private JDialog _dialog;
+
+    private JLabel _labelPort;
 
     private JTextPane _pane;
     private JScrollPane _paneScroll;

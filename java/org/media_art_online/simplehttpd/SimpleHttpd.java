@@ -89,7 +89,23 @@ public class SimpleHttpd implements SimpleHttpdVersion {
 
         (new SimpleHttpPortDialog(_frame)).setVisible(true);
         _dialog.setVisible(true);
-        (new SimpleHttpServer()).run();
+
+        try {
+            (new SimpleHttpServer()).run();
+
+        } catch (Exception ex) {
+
+            if (ex.getClass() == RuntimeException.class
+             && ex.getCause().getClass() == BindException.class) {
+
+                JOptionPane.showMessageDialog(null, getString("MSG_DUP"));
+
+            } else {
+                ex.printStackTrace();
+            }
+
+            System.exit(0);
+        }
     }
 
     public static SimpleHttpdLogger logger;
