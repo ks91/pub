@@ -35,10 +35,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.text.*;
 
 public class SimpleHttpdLogDialog extends Handler
- implements ActionListener, WindowListener {
+ implements ActionListener, MouseListener, PopupMenuListener, WindowListener {
 
     public SimpleHttpdLogDialog() {
 
@@ -46,6 +47,17 @@ public class SimpleHttpdLogDialog extends Handler
          SimpleHttpd.S_CLASS_RESOURCE.substring(
          SimpleHttpd.S_CLASS_RESOURCE.lastIndexOf(".") + 1)));
         setLevel(Level.ALL);
+
+        _menuPopup = new JPopupMenu(SimpleHttpd.getString("TITLE_MENU"));
+        _menuPopup.addPopupMenuListener(this);
+
+        _itemCopy = new JMenuItem(SimpleHttpd.getString("MENU_COPY"));
+        _itemCopy.addActionListener(this);
+        _menuPopup.add(_itemCopy);
+
+        _itemAll = new JMenuItem(SimpleHttpd.getString("MENU_ALL"));
+        _itemAll.addActionListener(this);
+        _menuPopup.add(_itemAll);
 
         _dialog = new JDialog();
         _dialog.setTitle(SimpleHttpd.getString("TITLE_LOG"));
@@ -58,6 +70,7 @@ public class SimpleHttpdLogDialog extends Handler
 
         _pane = new JTextPane();
         _pane.setEditable(false);
+        _pane.addMouseListener(this);
 
         _paneScroll = new JScrollPane(_pane,
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -115,6 +128,14 @@ public class SimpleHttpdLogDialog extends Handler
 
             } catch (BadLocationException unused) {
             }
+
+        } else if (source == _itemCopy) {
+
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+             new StringSelection(_pane.getSelectedText()), null);
+
+        } else if (source == _itemAll) {
+            _pane.selectAll();
         }
     }
 
@@ -124,6 +145,50 @@ public class SimpleHttpdLogDialog extends Handler
 
     @Override
     public void flush() {
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent unused) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent unused) {
+        _pane.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+    }
+
+    @Override
+    public void mouseExited(MouseEvent unused) {
+        _pane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    }
+
+    @Override
+    public void mousePressed(MouseEvent event) {
+
+        if (event.getClickCount() == 1) {
+
+            if (event.isPopupTrigger()
+             || SwingUtilities.isRightMouseButton(event)) {
+                _menuPopup.show(event.getComponent(), event.getX(),
+                 event.getY());
+            }
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent unused) {
+    }
+
+    @Override
+    public void popupMenuCanceled(PopupMenuEvent unused) {
+    }
+
+    @Override
+    public void popupMenuWillBecomeInvisible(PopupMenuEvent unused) {
+    }
+
+    @Override
+    public void popupMenuWillBecomeVisible(PopupMenuEvent unused) {
+        _itemCopy.setEnabled(_pane.getSelectedText() != null);
     }
 
     public void setVisible(boolean isVisible) {
@@ -231,6 +296,11 @@ public class SimpleHttpdLogDialog extends Handler
     private JDialog _dialog;
 
     private JLabel _labelPort;
+
+    private JMenuItem _itemAll;
+    private JMenuItem _itemCopy;
+
+    private JPopupMenu _menuPopup;
 
     private JTextPane _pane;
     private JScrollPane _paneScroll;
