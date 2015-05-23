@@ -30,14 +30,14 @@ package org.media_art_online.simplehttpd;
 import java.io.*;
 import java.net.*;
 import java.text.*;
+import java.util.Date;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import org.media_art_online.jabber.*;
-import org.media_art_online.plugin.*;
+import org.media_art_online.mime.*;
 import org.media_art_online.xml.*;
 
 public class SimpleHttpServingThread extends Thread {
@@ -50,7 +50,23 @@ public class SimpleHttpServingThread extends Thread {
     public static final String S_HTTP_GET = "GET ";
     public static final String S_HTTP_PUT = "PUT ";
 
+    public static final String S_DIR_CURRENT   = ".";
+    public static final String S_DIR_RESOURCE  = "_";
     public static final String S_INDEX_DEFAULT = "index.html";
+
+    public static final String S_PATH_ICON_AUDIO   = "/_res/wav.png";
+    public static final String S_PATH_ICON_CSS     = "/_res/css.png";
+    public static final String S_PATH_ICON_DEFAULT = "/_res/default.png";
+    public static final String S_PATH_ICON_FOLDER  = "/_res/folder.png";
+    public static final String S_PATH_ICON_HTML    = "/_res/html.png";
+    public static final String S_PATH_ICON_IMAGE   = "/_res/jpg.png";
+    public static final String S_PATH_ICON_JS      = "/_res/js.png";
+    public static final String S_PATH_ICON_PDF     = "/_res/acrobat.png";
+    public static final String S_PATH_ICON_TEXT    = "/_res/txt.png";
+    public static final String S_PATH_ICON_VIDEO   = "/_res/video.png";
+    public static final String S_PATH_ICON_ZIP     = "/_res/archive.png";
+
+    public static final String S_NA = "--";
 
     public static final String S_ISO_3166_JAPAN = "JP";
     public static final String S_ISO_3166_USA   = "US";
@@ -270,47 +286,24 @@ public class SimpleHttpServingThread extends Thread {
                     int index2 = s.indexOf(" ", index0 + 1);
                     int index3 = s.indexOf(".", index0 + 1);
 
-                    if (index3 > 0 && index3 < index2
-                     || index2 == index0 + 1) {
+                    String sFile = (index2 == index0 + 1
+                     ? S_DIR_CURRENT : s.substring(index0 + 1, index2));
 
-                        String sFile = (index2 == index0 + 1
-                         ? S_INDEX_DEFAULT
-                         : s.substring(index0 + 1, index2));
+                    try {
+                        sFile = URLDecoder.decode(sFile, "UTF-8");
 
-                        try {
-                            sFile = URLDecoder.decode(sFile, "UTF-8");
-
-                        } catch (UnsupportedEncodingException unused) {
-                        }
-
-                        String[] aos = sFile.split("/");
-
-                        sFile = aos[0];
-
-                        for (int i = 1; i < aos.length; i++) {
-                            sFile += File.separator + aos[i];
-                        }
-
-                        publicFileTransfer(sFile);
-
-                    } else {
-
-                        OutputStream output = _socket.getOutputStream();
-
-                        String sExc = SimpleHttpServer.getNotFoundResponse();
-
-                        output.write(sExc.getBytes());
-                        output.close();
-
-                        int idx = sExc.indexOf("<");
-
-                        if (idx >= 0) {
-                            sExc = sExc.substring(0, idx);
-                        }
-
-                        SimpleHttpd.logger.fine(httpLogHead(true) + "\n"
-                         + sExc);
+                    } catch (UnsupportedEncodingException unused) {
                     }
+
+                    String[] aos = sFile.split("/");
+
+                    sFile = aos[0];
+
+                    for (int i = 1; i < aos.length; i++) {
+                        sFile += File.separator + aos[i];
+                    }
+
+                    publicFileTransfer(sFile);
 
                     _losLines.clear();
                     iLength = 0;
@@ -343,6 +336,170 @@ public class SimpleHttpServingThread extends Thread {
 // BARRIER: Anything below is not open to other files.
 //===========================================================================
 
+    private SimpleHttpResource directoryResource(File dir, String sName) {
+
+        SimpleHttpResource res = null;
+
+        try {
+            res = new SimpleHttpResource(new File(dir, S_INDEX_DEFAULT));
+
+        } catch (Exception unused) {
+        }
+
+        if (res != null) {
+            return (res);
+        }
+
+        String s = SimpleHttpServer.S_BEGIN_HTML5 + dir.getName()
+         + SimpleHttpServer.S_BODY + "\n";
+
+        File[] aoFiles = dir.listFiles();
+
+        s += SimpleHttpServer.S_BEGIN_TABLE + "\n";
+
+        s += getIndexTableHeaderRowString();
+
+        if (!dir.getName().equals(".")) {
+            s += getIndexTableRowString("../", S_NA, S_NA);
+        }
+
+        SimpleDateFormat formatTime = new SimpleDateFormat(S_FORMAT_TIME);
+        DecimalFormat formatDec = new DecimalFormat("#.#");
+
+        for (File file : aoFiles) {
+
+            String sFile = file.getName();
+
+            if (!sFile.startsWith(".")) {
+
+                boolean isDir = file.isDirectory();
+
+                s += getIndexTableRowString(sFile + (isDir ? "/" : ""),
+                 formatTime.format(new Date(file.lastModified())),
+                 (isDir ? S_NA : getByteSizeString(file.length(), formatDec)));
+            }
+        }
+
+        s += SimpleHttpServer.S_END_TABLE + "\n"
+         + SimpleHttpServer.S_ADDRESS + SimpleHttpServer.S_END_HTML5;
+
+        try {
+            return (new SimpleHttpResource(sName, s, "UTF-8"));
+
+        } catch (UnsupportedEncodingException unused) {
+            return (null);
+        }
+    }
+
+    private String getByteSizeString(long lSize, DecimalFormat format) {
+
+        long x;
+
+        if ((x = lSize / L_GB) > 0) {
+            return (format.format(lSize / (double)L_GB)
+             + SimpleHttpServer.S_END_TABLE_DATA
+             + SimpleHttpServer.S_BEGIN_TABLE_DATA
+             + SimpleHttpd.getString("LABEL_BYTES_GB"));
+        }
+
+        if ((x = lSize / L_MB) > 0) {
+            return (format.format(lSize / (double)L_MB)
+             + SimpleHttpServer.S_END_TABLE_DATA
+             + SimpleHttpServer.S_BEGIN_TABLE_DATA
+             + SimpleHttpd.getString("LABEL_BYTES_MB"));
+        }
+
+        if ((x = lSize / L_KB) > 0) {
+            return (String.valueOf(x)
+             + SimpleHttpServer.S_END_TABLE_DATA
+             + SimpleHttpServer.S_BEGIN_TABLE_DATA
+             + SimpleHttpd.getString("LABEL_BYTES_KB"));
+        }
+
+        return (String.valueOf(lSize)
+         + SimpleHttpServer.S_END_TABLE_DATA
+         + SimpleHttpServer.S_BEGIN_TABLE_DATA
+         + SimpleHttpd.getString("LABEL_BYTES"));
+    }
+
+    private String getIndexTableHeaderRowString() {
+        return (SimpleHttpServer.S_BEGIN_TABLE_ROW
+         + SimpleHttpServer.S_BEGIN_TABLE_HEADER
+         + SimpleHttpServer.S_END_TABLE_HEADER
+         + SimpleHttpServer.S_BEGIN_TABLE_HEADER
+         + SimpleHttpd.getString("LABEL_NAME")
+         + SimpleHttpServer.S_END_TABLE_HEADER
+         + SimpleHttpServer.S_BEGIN_TABLE_HEADER
+         + SimpleHttpd.getString("LABEL_LAST_MODIFIED")
+         + SimpleHttpServer.S_END_TABLE_HEADER
+         + SimpleHttpServer.S_BEGIN_TABLE_HEADER_COLSPAN_2
+         + SimpleHttpd.getString("LABEL_SIZE")
+         + SimpleHttpServer.S_END_TABLE_HEADER
+         + SimpleHttpServer.S_END_TABLE_ROW + "\n");
+    }
+
+    private String getIndexTableRowString(String sFile, String sDate,
+     String sSize) {
+
+        String s = "";
+
+        if (sFile.endsWith("/")) {
+            s = S_PATH_ICON_FOLDER;
+
+        } else {
+
+            String sType = MIME.getFileType(sFile);
+
+            if (sType.equals(MIME.S_TYPE_HTML)) {
+                s = S_PATH_ICON_HTML;
+
+            } else if (sType.equals(MIME.S_TYPE_CSS)) {
+                s = S_PATH_ICON_CSS;
+
+            } else if (sType.equals(MIME.S_TYPE_JS)) {
+                s = S_PATH_ICON_JS;
+
+            } else if (sType.equals(MIME.S_TYPE_PDF)) {
+                s = S_PATH_ICON_PDF;
+
+            } else if (MIME.isImage(sType)) {
+                s = S_PATH_ICON_IMAGE;
+
+            } else if (MIME.isText(sType)) {
+                s = S_PATH_ICON_TEXT;
+
+            } else if (MIME.isArchive(sType)) {
+                s = S_PATH_ICON_ZIP;
+
+            } else if (MIME.isAudio(sType)) {
+                s = S_PATH_ICON_AUDIO;
+
+            } else if (MIME.isVideo(sType)) {
+                s = S_PATH_ICON_VIDEO;
+
+            } else {
+                s = S_PATH_ICON_DEFAULT;
+            }
+        }
+
+        return (SimpleHttpServer.S_BEGIN_TABLE_ROW
+         + SimpleHttpServer.S_BEGIN_TABLE_DATA
+         + SimpleHttpServer.S_BEGIN_ICON + s + SimpleHttpServer.S_END_ICON
+         + SimpleHttpServer.S_END_TABLE_DATA
+         + SimpleHttpServer.S_BEGIN_TABLE_DATA
+         + SimpleHttpServer.S_BEGIN_ANCHOR + sFile
+         + SimpleHttpServer.S_BEGIN_ANCHOR_CLOSE
+         + sFile + SimpleHttpServer.S_END_ANCHOR
+         + SimpleHttpServer.S_END_TABLE_DATA
+         + SimpleHttpServer.S_BEGIN_TABLE_DATE
+         + sDate
+         + SimpleHttpServer.S_END_TABLE_DATA
+         + SimpleHttpServer.S_BEGIN_TABLE_NUMBER
+         + sSize
+         + SimpleHttpServer.S_END_TABLE_DATA
+         + SimpleHttpServer.S_END_TABLE_ROW + "\n");
+    }
+
     private String httpLogHead(boolean isOutput) {
 
         InetSocketAddress addr
@@ -361,9 +518,16 @@ public class SimpleHttpServingThread extends Thread {
         SimpleHttpResource res = null;
         InputStream input = null;
         String sExc = null;
+        File file = null;
 
         try {
-            res = new SimpleHttpResource(new File(sPath));
+            if (sPath.startsWith(S_DIR_RESOURCE)) {
+                res = new SimpleHttpResource(getClass().getResource(
+                 sPath.substring(S_DIR_RESOURCE.length())));
+
+            } else {
+                res = new SimpleHttpResource(file = new File(sPath));
+            }
 
         } catch (SimpleHttpForbiddenException ex) {
             sExc = SimpleHttpServer.getForbiddenResponse();
@@ -388,6 +552,10 @@ public class SimpleHttpServingThread extends Thread {
         }
 
         if (sExc == null) {
+
+            if (file != null && file.isDirectory()) {
+                res = directoryResource(file, res.getName());
+            }
 
             String sOut = SimpleHttpServer.getOKResponse(
              res.getContentLength(), res.getType());
@@ -424,10 +592,16 @@ public class SimpleHttpServingThread extends Thread {
 
     private Socket _socket;
 
+    private static final String S_FORMAT_TIME = "yyyy-MM-dd HH:mm";
+
     private static final String[] AOS_ENGLISH_USA
                                  = {S_ISO_639_ENGLISH, S_ISO_3166_USA};
     private static final String[] AOS_JAPANESE_JAPAN
                                  = {S_ISO_639_JAPANESE, S_ISO_3166_JAPAN};
+
+    private static final long L_KB = 1024;
+    private static final long L_MB = 1024 * L_KB;
+    private static final long L_GB = 1024 * L_MB;
 
     private static final int IDX_LANG    = 0;
     private static final int IDX_COUNTRY = 1;

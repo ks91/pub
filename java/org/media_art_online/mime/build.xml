@@ -9,7 +9,7 @@
     <echo message="building mime..."/>
     <mkdir dir="${build.dir}"/>
     <javac srcdir="${basedir}" destdir="${build.dir}" debug="on"
-	 deprecation="on">
+     deprecation="on">
     </javac>
     <echo message="built mime."/>
   </target>

@@ -64,10 +64,7 @@ public class SimpleHttpResource {
         _input = connection.getInputStream();
         _length = connection.getContentLength();
         _sName = url.getFile();
-
-        int index = _sName.lastIndexOf(".");
-
-        _sType = MIME.getType(index <= 0 ? "" : _sName.substring(index + 1));
+        _sType = MIME.getFileType(_sName);
     }
 
     public long getContentLength() {

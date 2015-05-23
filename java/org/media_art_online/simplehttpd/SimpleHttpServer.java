@@ -46,15 +46,40 @@ public class SimpleHttpServer implements SimpleHttpdVersion {
     public static final String S_ADDRESS
      = "<hr/><address>" + S_SERVER_NAME + "</address>";
 
+    public static final String S_BEGIN_ANCHOR = "<a href=\"";
+    public static final String S_BEGIN_ANCHOR_CLOSE = "\">";
+
     public static final String S_BEGIN_HTML5
      = "<!DOCTYPE html><html><head><title>";
+
+    public static final String S_BEGIN_ICON = "<img src=\"";
+
+    public static final String S_BEGIN_TABLE        = "<table>";
+    public static final String S_BEGIN_TABLE_DATA   = "<td>";
+    public static final String S_BEGIN_TABLE_DATE
+                 = "<td style=\"padding-left: 20px; padding-right: 20px;\">";
+    public static final String S_BEGIN_TABLE_NUMBER
+                                     = "<td style=\"text-align: right;\">";
+    public static final String S_BEGIN_TABLE_HEADER = "<th>";
+    public static final String S_BEGIN_TABLE_HEADER_COLSPAN_2
+                                     = "<th colspan=\"2\">";
+    public static final String S_BEGIN_TABLE_ROW    = "<tr>";
 
     public static final String S_BODY = "</title></head><body>";
 
     public static final String S_CONTENT_TYPE
      = "Content-Type: text/html; charset=iso-8859-1\r\n";
 
+    public static final String S_END_ANCHOR = "</a>";
+
     public static final String S_END_HTML5 = "</body></html>";
+
+    public static final String S_END_ICON = "\" alt=\"[icon]\" width=\"24\"/>";
+
+    public static final String S_END_TABLE        = "</table>";
+    public static final String S_END_TABLE_DATA   = "</td>";
+    public static final String S_END_TABLE_HEADER = "</th>";
+    public static final String S_END_TABLE_ROW    = "</tr>";
 
     public static final String S_SERVER = "Server: " + S_SERVER_NAME + "\r\n";
 
