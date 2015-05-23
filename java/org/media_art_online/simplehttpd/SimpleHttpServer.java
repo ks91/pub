@@ -50,7 +50,7 @@ public class SimpleHttpServer implements SimpleHttpdVersion {
     public static final String S_BEGIN_ANCHOR_CLOSE = "\">";
 
     public static final String S_BEGIN_HTML5
-     = "<!DOCTYPE html><html><head><title>";
+     = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"/><title>";
 
     public static final String S_BEGIN_ICON = "<img src=\"";
 

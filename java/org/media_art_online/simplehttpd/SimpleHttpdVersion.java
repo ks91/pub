@@ -31,7 +31,7 @@ package org.media_art_online.simplehttpd;
 
 public interface SimpleHttpdVersion {
 
-    public static final String S_CAPS_VER = "1.0.1";
+    public static final String S_CAPS_VER = "1.1.0";
 
     public static final String S_COPYRIGHT_PLAIN
      = "Copyright (C) 2015 Media Art Online. Licensed under GNU GPL.";

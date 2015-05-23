@@ -295,12 +295,15 @@ public class SimpleHttpServingThread extends Thread {
                     } catch (UnsupportedEncodingException unused) {
                     }
 
-                    String[] aos = sFile.split("/");
+                    if (!sFile.startsWith(S_DIR_RESOURCE)) {
 
-                    sFile = aos[0];
+                        String[] aos = sFile.split("/");
 
-                    for (int i = 1; i < aos.length; i++) {
-                        sFile += File.separator + aos[i];
+                        sFile = aos[0];
+
+                        for (int i = 1; i < aos.length; i++) {
+                            sFile += File.separator + aos[i];
+                        }
                     }
 
                     publicFileTransfer(sFile);
