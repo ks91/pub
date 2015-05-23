@@ -32,22 +32,25 @@
       <fileset dir="${build.dir}" includes="manifest.txt"/>
     </delete>
     <copy todir="${build.dir}">
-      <fileset dir="${basedir}" includes="**/*.txt"/>
+      <fileset dir="${basedir}" includes="**/manifest.txt"/>
     </copy>
-    <jar destfile="${build.dir}/simplehttpd-1-0-1.jar"
+    <jar destfile="${build.dir}/simplehttpd-1-1-0.jar"
      manifest="${build.dir}/manifest.txt">
       <fileset dir="${build.dir}" includes="org/media_art_online/simplehttpd/**/*"/>
       <fileset dir="${build.dir}" includes="org/media_art_online/mime/*"/>
+      <fileset dir="${build.dir}" includes="org/media_art_online/xml/*"/>
     </jar>
     <echo message="packaged simplehttpd application..."/>
   </target>
 
   <target name="lib">
     <ant dir="../mime" target="obj"/>
+    <ant dir="../xml"  target="obj"/>
   </target>
 
   <target name="clean">
     <ant dir="../mime" target="clean"/>
+    <ant dir="../xml"  target="clean"/>
     <delete dir="${build.dir}/org/media_art_online/simplehttpd"/>
     <delete>
       <fileset dir="${build.dir}" includes="manifest.txt"/>

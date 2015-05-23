@@ -2,14 +2,14 @@
 // Freely available from Media Art Online (http://www.media-art-online.org/).
 // Copyright (C) 2015 Media Art Online (cafe@media-art-online.org)
 //
-// This file is part of SimpleHttpd.
+// This file is part of mime.
 //
-// SimpleHttpd is free software; you can redistribute it and/or modify
+// mime is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
 //
-// SimpleHttpd is distributed in the hope that it will be useful,
+// mime is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -51,12 +51,12 @@ public class MIME {
     public static final String S_TYPE_TEXT_  = "text";
     public static final String S_TYPE_ZIP_   = "zip";
 
-	public static String getFileType(String sFile) {
+    public static String getFileType(String sFile) {
 
-		int index = sFile.lastIndexOf(".");
+        int index = sFile.lastIndexOf(".");
 
-		return (getType(index <= 0 ? "" : sFile.substring(index + 1)));
-	}
+        return (getType(index <= 0 ? "" : sFile.substring(index + 1)));
+    }
 
     public static String getType(String sExtension) {
 
@@ -84,9 +84,9 @@ public class MIME {
         return (sType);
     }
 
-	public static boolean isArchive(String sType) {
-		return (sType.indexOf(S_TYPE_ZIP_) >= 0);
-	}
+    public static boolean isArchive(String sType) {
+        return (sType.indexOf(S_TYPE_ZIP_) >= 0);
+    }
 
     public static boolean isAudio(String sType) {
         return (sType.startsWith(S_TYPE_AUDIO));
@@ -96,9 +96,9 @@ public class MIME {
         return (sType.startsWith(S_TYPE_IMAGE));
     }
 
-	public static boolean isText(String sType) {
-		return (sType.indexOf(S_TYPE_TEXT_) >= 0);
-	}
+    public static boolean isText(String sType) {
+        return (sType.indexOf(S_TYPE_TEXT_) >= 0);
+    }
 
     public static boolean isVideo(String sType) {
         return (sType.startsWith(S_TYPE_VIDEO)

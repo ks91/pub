@@ -54,6 +54,8 @@ public class SimpleHttpd implements SimpleHttpdVersion {
 
         _bundle = ResourceBundle.getBundle(S_CLASS_RESOURCE, locale);
 
+        _isCheckingXML = false;
+
         _frame = new JFrame();
         _dialog = new SimpleHttpdLogDialog();
 
@@ -79,6 +81,10 @@ public class SimpleHttpd implements SimpleHttpdVersion {
 
     public static String getString(String sTag) {
         return (_bundle.getString(sTag));
+    }
+
+    public static boolean isCheckingXML() {
+        return (_isCheckingXML);
     }
 
     public static void main(String[] unused) {
@@ -111,6 +117,10 @@ public class SimpleHttpd implements SimpleHttpdVersion {
         }
     }
 
+    public static void setCheckingXML(boolean isCheckingXML) {
+        _isCheckingXML = isCheckingXML;
+    }
+
     public static SimpleHttpdLogger logger;
 
     public static int iPort = I_PORT_DEFAULT;
@@ -124,6 +134,8 @@ public class SimpleHttpd implements SimpleHttpdVersion {
     private static ResourceBundle _bundle;
 
     private SimpleHttpdLogDialog _dialog;
+
+    private static boolean _isCheckingXML;
 
     private static final String S_REGEX_PERMISSION_DENIED
                                                      = ".*[Pp]ermission.*";

@@ -90,6 +90,7 @@ public class SimpleHttpdLogDialog extends Handler
         _buttonCopy = createButton("LABEL_COPY", panel);
         _buttonClear = createButton("LABEL_CLEAR", panel);
         _buttonExit = createButton("LABEL_EXIT", panel);
+        _checkXML = createCheckBox("LABEL_XML_CHECK", panel);
 
         _dialog.getContentPane().add(panel, BorderLayout.SOUTH);
 
@@ -136,6 +137,9 @@ public class SimpleHttpdLogDialog extends Handler
 
         } else if (source == _itemAll) {
             _pane.selectAll();
+
+        } else if (source == _checkXML) {
+            SimpleHttpd.setCheckingXML(_checkXML.isSelected());
         }
     }
 
@@ -265,6 +269,15 @@ public class SimpleHttpdLogDialog extends Handler
         return (button);
     }
 
+    private JCheckBox createCheckBox(String sLabel, JPanel panel) {
+
+        JCheckBox check = new JCheckBox(SimpleHttpd.getString(sLabel));
+        check.addActionListener(this);
+        panel.add(check);
+
+        return (check);
+    }
+
     private void tryExit() {
 
         Object[] aoMessages = {SimpleHttpd.getString("MSG_EXIT")};
@@ -292,6 +305,8 @@ public class SimpleHttpdLogDialog extends Handler
     private JButton _buttonClear;
     private JButton _buttonCopy;
     private JButton _buttonExit;
+
+    private JCheckBox _checkXML;
 
     private JDialog _dialog;
 

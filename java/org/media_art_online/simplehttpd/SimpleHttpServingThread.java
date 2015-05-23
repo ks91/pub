@@ -572,6 +572,31 @@ public class SimpleHttpServingThread extends Thread {
                 output.write(buf, 0, length);
             }
 
+            if (SimpleHttpd.isCheckingXML() && file != null
+             && res.getType().equals(MIME.S_TYPE_HTML)) {
+
+                XML xml = new XML(file);
+                int iCode = xml.parse();
+
+                Object[] ao = {
+                    file.getName(),
+                    iCode == XML.DONE ? "OK" : "NG"
+                };
+
+                String s = MessageFormat.format(
+                 SimpleHttpd.getString("MSG_XML_CHECK"), ao) + "\n";
+
+                for (XMLParseError error : xml.getErrors()) {
+
+                    s += SimpleHttpd.getString("LABEL_LINE") + " "
+                     + error.getLineNumber() + " : "
+                     + MessageFormat.format(SimpleHttpd.getString(
+                     error.getResourceKey()), error.getAdditionals()) + "\n";
+                }
+
+                SimpleHttpd.logger.fine(s + "\n");
+            }
+
         } else {
 
             output.write(sExc.getBytes());

@@ -1,0 +1,36 @@
+<project name="xml" default="obj" basedir=".">
+
+  <property environment="env"/>
+  <property name="src.dir"     value="../../../../java"/>
+  <property name="build.dir"   value="../../../../javaout"/>
+  <property name="doc.dir"     value="../../../../javadoc"/>
+
+  <target name="obj">
+    <echo message="building xml..."/>
+    <mkdir dir="${build.dir}"/>
+    <javac srcdir="${basedir}" destdir="${build.dir}" debug="on"
+     deprecation="on">
+    </javac>
+    <echo message="built xml."/>
+  </target>
+
+  <target name="clean">
+    <delete dir="${build.dir}/org/media_art_online/xml"/>
+  </target>
+
+  <target name="doc">
+    <echo message="documenting xml..."/>
+    <javadoc
+     packagenames="org.media_art_online.xml"
+     classpath="${build.dir}"
+     destdir="${doc.dir}" Locale="en_US">
+      <fileset dir="${basedir}">
+        <include name="**/*.java"/>
+      </fileset>
+    </javadoc>
+    <echo message="documented xml."/>
+  </target>
+
+</project>
+
+<!-- end of build.xml -->
