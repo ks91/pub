@@ -31,6 +31,7 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.io.*;
+import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.*;
@@ -39,7 +40,8 @@ import javax.swing.event.*;
 import javax.swing.text.*;
 
 public class SimpleHttpdLogDialog extends Handler
- implements ActionListener, MouseListener, PopupMenuListener, WindowListener {
+ implements ActionListener, MouseListener, MouseMotionListener,
+ PopupMenuListener, WindowListener {
 
     public SimpleHttpdLogDialog() {
 
@@ -71,6 +73,7 @@ public class SimpleHttpdLogDialog extends Handler
         _pane = new JTextPane();
         _pane.setEditable(false);
         _pane.addMouseListener(this);
+        _pane.addMouseMotionListener(this);
 
         _paneScroll = new JScrollPane(_pane,
          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -156,6 +159,10 @@ public class SimpleHttpdLogDialog extends Handler
     }
 
     @Override
+    public void mouseDragged(MouseEvent unused) {
+    }
+
+    @Override
     public void mouseEntered(MouseEvent unused) {
         _pane.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
     }
@@ -163,6 +170,43 @@ public class SimpleHttpdLogDialog extends Handler
     @Override
     public void mouseExited(MouseEvent unused) {
         _pane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        _pane.setToolTipText("");
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent event) {
+
+        int index1 = _pane.viewToModel(event.getPoint());
+
+        try {
+
+            if (_pane.getText(index1 - 3, 6).indexOf("%") < 0) {
+                _pane.setToolTipText("");
+                return;
+            }
+
+            char c = '\0';
+
+            while ((c = _pane.getText(index1, 1).charAt(0)) != '\n') {
+                index1--;
+            }
+
+            int index2 = ++index1;
+
+            while ((c = _pane.getText(++index2, 1).charAt(0))
+             != '\n') {
+            }
+
+            _pane.setToolTipText(URLDecoder.decode(
+             _pane.getText(index1, index2 - index1), "UTF-8"));
+
+        } catch (BadLocationException unused) {
+
+        /* perhaps trailing % of an IPv6 address */
+        } catch (IllegalArgumentException unused) {
+
+        } catch (UnsupportedEncodingException unused) {
+        }
     }
 
     @Override
