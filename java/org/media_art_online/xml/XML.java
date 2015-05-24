@@ -35,6 +35,7 @@ public class XML {
 
     public static final String S_ERR_BAD_ATTR   = "XML_ERR_BAD_ATTR";
     public static final String S_ERR_BAD_EOF    = "XML_ERR_BAD_EOF";
+    public static final String S_ERR_BOM        = "XML_ERR_BOM";
     public static final String S_ERR_IO         = "XML_ERR_IO";
     public static final String S_ERR_NOT_CLOSED = "XML_ERR_NOT_CLOSED";
     public static final String S_ERR_NOT_OPENED = "XML_ERR_NOT_OPENED";
@@ -175,6 +176,9 @@ public class XML {
 
                     } else if (_result == OK) {
                         _result = ERROR;
+
+                        _loErrors.add(new XMLParseError(S_ERR_BOM,
+                         new Object[] {}, _iLine));
                     }
                     break;
 
@@ -201,11 +205,28 @@ public class XML {
                         } else {
                             _result = ERROR;
 
-                            XMLParsedBlock block = _stack.peek();
+                            XMLParsedBlock block0 = _stack.peek();
+                            boolean isFound = false;
 
-                            _loErrors.add(new XMLParseError(S_ERR_NOT_CLOSED,
-                             new Object[] {block.getCurrentElement().getTag()},
-                             block.getLineNumber()));
+                            for (XMLParsedBlock block : _stack) {
+
+                                if (block.getCurrentElement().getTag()
+                                 .equals(s)) {
+                                    isFound = true;
+                                    break;
+                                }
+                            }
+
+                            if (isFound) {
+                                _loErrors.add(new XMLParseError(
+                                 S_ERR_NOT_CLOSED,
+                                 new Object[] {block0.getCurrentElement()
+                                 .getTag()}, block0.getLineNumber()));
+
+                            } else {
+                                _loErrors.add(new XMLParseError(
+                                 S_ERR_NOT_OPENED, new Object[] {s}, _iLine));
+                            }
                         }
 
                     } else {

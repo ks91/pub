@@ -43,7 +43,7 @@ public class SimpleHttpdLogDialog extends Handler
  implements ActionListener, MouseListener, MouseMotionListener,
  PopupMenuListener, WindowListener {
 
-    public SimpleHttpdLogDialog() {
+    public SimpleHttpdLogDialog(JFrame frame) {
 
         setFormatter(new SimpleHttpdLogFormatter(
          SimpleHttpd.S_CLASS_RESOURCE.substring(
@@ -61,8 +61,9 @@ public class SimpleHttpdLogDialog extends Handler
         _itemAll.addActionListener(this);
         _menuPopup.add(_itemAll);
 
-        _dialog = new JDialog();
-        _dialog.setTitle(SimpleHttpd.getString("TITLE_LOG"));
+        _dialog = frame;
+        _dialog.setTitle(SimpleHttpdVersion.S_NAME
+         + " " + SimpleHttpd.getString("TITLE_LOG"));
         _dialog.addWindowListener(this);
         _dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -352,7 +353,7 @@ public class SimpleHttpdLogDialog extends Handler
 
     private JCheckBox _checkXML;
 
-    private JDialog _dialog;
+    private JFrame _dialog;
 
     private JLabel _labelPort;
 

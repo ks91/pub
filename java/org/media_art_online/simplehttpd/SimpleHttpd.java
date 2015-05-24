@@ -56,8 +56,8 @@ public class SimpleHttpd implements SimpleHttpdVersion {
 
         _isCheckingXML = false;
 
-        _frame = new JFrame();
-        _dialog = new SimpleHttpdLogDialog();
+        _frame = new JFrame(SimpleHttpdVersion.S_NAME);
+        _dialog = new SimpleHttpdLogDialog(_frame);
 
         logger = new SimpleHttpdLogger(S_CLASS_RESOURCE);
         logger.addHandler(_dialog);

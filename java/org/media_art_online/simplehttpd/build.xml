@@ -34,7 +34,7 @@
     <copy todir="${build.dir}">
       <fileset dir="${basedir}" includes="**/manifest.txt"/>
     </copy>
-    <jar destfile="${build.dir}/simplehttpd-1-1-0.jar"
+    <jar destfile="${build.dir}/simplehttpd-1-1-1.jar"
      manifest="${build.dir}/manifest.txt">
       <fileset dir="${build.dir}" includes="org/media_art_online/simplehttpd/**/*"/>
       <fileset dir="${build.dir}" includes="org/media_art_online/mime/*"/>
