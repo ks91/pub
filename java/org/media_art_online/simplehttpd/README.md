@@ -20,7 +20,11 @@ Upon starting up, the program asks for the port number, whose default value is 8
 The document root is where the jar file is placed.
 While at work, the server shows the log of HTTP communication.
 
-What's new in version 1.1.0:
+What's new in version 1.1.1 (2015-05-24):
+- Better XML syntax error messages.
+- Perhaps now appears on Windows taskbar.
+
+What's new in version 1.1.0 (2015-05-23):
 - Shows a pop-up menu over the log window (answered a student's request)
 - Directory listing.
 - Optional XML syntax checking for HTML files.
