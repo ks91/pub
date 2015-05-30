@@ -33,6 +33,7 @@ import java.util.Stack;
 
 public class XML {
 
+    public static final String S_ERR_BAD        = "XML_ERR_BAD";
     public static final String S_ERR_BAD_ATTR   = "XML_ERR_BAD_ATTR";
     public static final String S_ERR_BAD_EOF    = "XML_ERR_BAD_EOF";
     public static final String S_ERR_BOM        = "XML_ERR_BOM";
@@ -66,8 +67,8 @@ public class XML {
 
     public static final int ERROR = -2;
     public static final int EOF   = -1;
-    public static final int OK    = 0;
-    public static final int DONE  = 1;
+    public static final int OK    =  0;
+    public static final int DONE  =  1;
 
     public XML(File file) {
         this(file, "UTF-8");
@@ -116,6 +117,10 @@ public class XML {
     }
 
     public int parse() {
+        return (parse(true));
+    }
+
+    public int parse(boolean isToClearErrors) {
 
         String sTemp = "";
         String s;
@@ -123,7 +128,9 @@ public class XML {
         int state = WAIT_OPEN;
         int c;
 
-        _loErrors.clear();
+        if (isToClearErrors) {
+            _loErrors.clear();
+        }
         _result = OK;
 
         for (; ;) {
@@ -177,8 +184,14 @@ public class XML {
                     } else if (_result == OK) {
                         _result = ERROR;
 
-                        _loErrors.add(new XMLParseError(S_ERR_BOM,
-                         new Object[] {}, _iLine));
+                        if (_iLine <= 1) {
+                            _loErrors.add(new XMLParseError(S_ERR_BOM,
+                             new Object[] {}, _iLine));
+
+                        } else {
+                            _loErrors.add(new XMLParseError(S_ERR_BAD,
+                             new Object[] {}, _iLine));
+                        }
                     }
                     break;
 
@@ -203,7 +216,6 @@ public class XML {
                             _stack.pop();
 
                         } else {
-                            _result = ERROR;
 
                             XMLParsedBlock block0 = _stack.peek();
                             boolean isFound = false;
@@ -218,12 +230,21 @@ public class XML {
                             }
 
                             if (isFound) {
+
+                                XMLParsedBlock block = null;
+
+                                do {
+                                    block = _stack.pop();
+                                } while (!block.getCurrentElement().getTag()
+                                 .equals(s));
+
                                 _loErrors.add(new XMLParseError(
                                  S_ERR_NOT_CLOSED,
                                  new Object[] {block0.getCurrentElement()
                                  .getTag()}, block0.getLineNumber()));
 
                             } else {
+
                                 _loErrors.add(new XMLParseError(
                                  S_ERR_NOT_OPENED, new Object[] {s}, _iLine));
                             }

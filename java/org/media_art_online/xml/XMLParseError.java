@@ -37,6 +37,30 @@ public class XMLParseError {
         _iLine = iLine;
     }
 
+    @Override
+    public boolean equals(Object object) {
+
+        if (object.getClass() != XMLParseError.class) {
+            return (false);
+        }
+
+        Object[] ao = ((XMLParseError)object)._ao;
+
+        if (_ao.length != ao.length) {
+            return (false);
+        }
+
+        for (int i = 0; i < _ao.length; i++) {
+
+            if (!_ao[i].equals(ao[i])) {
+                return (false);
+            }
+        }
+
+        return (_iLine == ((XMLParseError)object)._iLine
+         && _sKey.equals(((XMLParseError)object)._sKey));
+    }
+
     public Object[] getAdditionals() {
         return (_ao);
     }
