@@ -523,6 +523,12 @@ public class SimpleHttpServingThread extends Thread {
         String sExc = null;
         File file = null;
 
+		int index = 0;
+
+		if ((index = sPath.indexOf("?")) > 0) {
+			sPath = sPath.substring(0, index);
+		}
+
         try {
             if (sPath.startsWith(S_DIR_RESOURCE)) {
                 res = new SimpleHttpResource(getClass().getResource(
