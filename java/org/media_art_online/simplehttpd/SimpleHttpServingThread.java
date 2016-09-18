@@ -44,6 +44,7 @@ public class SimpleHttpServingThread extends Thread {
 
     public static final String S_ACCEPT_LANGUAGE   = "Accept-Language: ";
     public static final String S_CONTENT_LENGTH    = "Content-Length: ";
+    public static final String S_CONTENT_LENGTH_   = "content-length: ";
     public static final String S_IF_MODIFIED_SINCE = "If-Modified-Since: ";
     public static final String S_USER_AGENT        = "User-Agent: ";
 
@@ -252,7 +253,8 @@ public class SimpleHttpServingThread extends Thread {
 
                 _losLines.add(s);
 
-                if (s.startsWith(S_CONTENT_LENGTH)) {
+                if (s.startsWith(S_CONTENT_LENGTH)
+				 || s.startsWith(S_CONTENT_LENGTH_)) {
 
                     try {
                         iLength = Integer.parseInt(
@@ -307,6 +309,13 @@ public class SimpleHttpServingThread extends Thread {
                     }
 
                     publicFileTransfer(sFile);
+
+					if (SimpleHttpd.isVerbose) {
+
+						for (String sIn : _losLines) {
+							System.err.println(sIn);
+						}
+					}
 
                     _losLines.clear();
                     iLength = 0;

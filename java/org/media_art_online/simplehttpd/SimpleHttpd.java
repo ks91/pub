@@ -43,9 +43,12 @@ public class SimpleHttpd implements SimpleHttpdVersion {
     public static final String S_CLASS_RESOURCE
                              = "org.media_art_online.simplehttpd.simplehttpd";
 
+	public static final String S_OPT_VERBOSE = "--verbose";
+
+
     public static final int I_PORT_DEFAULT = 8480;
 
-    public SimpleHttpd() {
+    public SimpleHttpd(String[] aosArgs) {
 
         System.out.println(S_NAME + " " + S_VERSION + "\n"
          + S_COPYRIGHT_PLAIN);
@@ -55,6 +58,13 @@ public class SimpleHttpd implements SimpleHttpdVersion {
         _bundle = ResourceBundle.getBundle(S_CLASS_RESOURCE, locale);
 
         _isCheckingXML = false;
+
+		for (String sOpt : aosArgs) {
+
+			if (sOpt.equals(S_OPT_VERBOSE)) {
+				isVerbose = true;
+			}
+		}
 
         _frame = new JFrame(SimpleHttpdVersion.S_NAME);
         _dialog = new SimpleHttpdLogDialog(_frame);
@@ -87,8 +97,8 @@ public class SimpleHttpd implements SimpleHttpdVersion {
         return (_isCheckingXML);
     }
 
-    public static void main(String[] unused) {
-        (new SimpleHttpd()).run();
+    public static void main(String[] aosArgs) {
+        (new SimpleHttpd(aosArgs)).run();
     }
 
     public void run() {
@@ -124,6 +134,8 @@ public class SimpleHttpd implements SimpleHttpdVersion {
     public static SimpleHttpdLogger logger;
 
     public static int iPort = I_PORT_DEFAULT;
+
+	public static boolean isVerbose = false;
 
 //===========================================================================
 // BARRIER: Anything below is not open to other files.
